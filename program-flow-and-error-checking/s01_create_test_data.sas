@@ -1,10 +1,8 @@
-%let test_data_start_dt = "01jan2015"d;
-
 /*
-	Get a subset of the SASHELP.CARS data set supplied by SAS, and use it to make 24 months 
-	worth of test data.
-	
-	With each month, the MSRP will increase.
+	Simulate some test data. Create 24 months worth of vehicle data.
+
+	Use some columns from SASHELP.CARS and a few loops to create the months.
+	Each month, the MSRP will increase.
 */
 
 data s01a_test_data(drop=dateIncrement);
@@ -13,7 +11,7 @@ data s01a_test_data(drop=dateIncrement);
 	/* Loop for 24 months, each time loading the sashelp.cars table and increasing the MSRP */
 	do dateIncrement = 0 to 23;
 		/* Get the next month based on where we are in the loop */
-		measure_month = intnx('month',&test_data_start_dt.,dateIncrement,'beginning');
+		measure_month = intnx('month',"01jan2015"d,dateIncrement,'beginning');
 		do i = 1 to car_count;
 			set sashelp.cars(keep=make model Type drivetrain Origin MSRP Cylinders) point=i nobs=car_count;
 			model = left(model);
@@ -46,6 +44,8 @@ proc sql;
 
 	/* Bad Drive Train */
 	values ("01dec2016"d, "Nissan", "Awesome", "Wagon", "USA", "Apple", 45000, 4) 
+
+	/* MSRP outlier */
+	values ("01dec2016"d, "Ford", "Loaf", "Wagon", "USA", "Front", 987654321, 4) 
 	;
 quit;
-	
