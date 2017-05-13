@@ -1,7 +1,16 @@
 /*
-	Rules sent to governing body, must conform to rules.
+	Data will be sent to governing body, must conform to rules.
+	
+	Declare checks. 
 
-	Going to use naming convention to make our lives easy
+	The data set label is important. It will be used in a later step
+	for summarizing the checks.
+
+	Rows that fail the checks will be output into a data set for each check,
+	each with the specified prefix.
+
+	Since each use the same prefix, that prefix can be used in a later step
+	to identify the data quality data sets.
 */
 %macro chk01_cylinders(src_tbl, result_prefix);
 
@@ -88,7 +97,33 @@
 	RUN;
 %mend chk04_no_msrp_outliers;
 
-%chk01_cylinders(src_tbl=s01a_test_data, result_prefix=S02a_CHK_);
-%chk02_msrp(src_tbl=s01a_test_data, result_prefix=S02a_CHK_);
-%chk03_no_dupes(src_tbl=s01a_test_data, result_prefix=S02a_CHK_);
-%chk04_no_msrp_outliers(src_tbl=s01a_test_data, result_prefix=S02a_CHK_);
+%LET SRC = s01a_test_data;
+
+/* 
+	The first part of this prefix is the step in the program we are on.
+	It makes the data sets appear in order under WORK, among other benefits.
+	
+	The 2nd part of this prefix, _CHK_, is a naming convention we are going to
+	use to identify data quality checks.	
+*/
+%let prefix = S02a_CHK_;
+
+%chk01_cylinders(
+	src_tbl = &src.
+	, result_prefix = &prefix.
+);
+
+%chk02_msrp(
+	src_tbl = &src.
+	, result_prefix = &prefix.
+);
+
+%chk03_no_dupes(
+	src_tbl = &src.
+	, result_prefix = &prefix.
+);
+
+%chk04_no_msrp_outliers(
+	src_tbl = &src.
+	, result_prefix = &prefix.
+);
