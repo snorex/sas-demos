@@ -31,6 +31,3 @@
 	quit;
 
 %mend count_rows_in_check_tables;
-
-/*%count_rows_in_check_tables(*/
-
